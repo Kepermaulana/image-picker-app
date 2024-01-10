@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:take_picture_app/Colors.dart' as c;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,8 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future getImageFromGallery() async {
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
-    final pickedFile = await picker.pickImage(
-        source: ImageSource.gallery, imageQuality: 100);
+    final pickedFile =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 5);
 
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
     // final kb = bytes / 1024;
@@ -36,8 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future getImageFromCamera() async {
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
-    final pickedFile = await picker.pickImage(
-        source: ImageSource.camera, imageQuality: 100);
+    final pickedFile =
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 5);
 
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
     // final kb = bytes / 1024;
@@ -89,6 +90,13 @@ class _HomeScreenState extends State<HomeScreen> {
             TextButton(
               child: Text('Pilih Gambar'),
               onPressed: showOptions,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Text(
+                'Ukuran maximal file adalah 100kb',
+                style: TextStyle(color: c.redColor),
+              ),
             ),
             Center(
               child: _image == null
