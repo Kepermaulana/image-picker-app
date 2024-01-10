@@ -14,43 +14,43 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   File? _image;
   final picker = ImagePicker();
+  // int _imageQuality = 100;
 
   Future getImageFromGallery() async {
-    final pickedFile =
-        await picker.pickImage(source: ImageSource.gallery, imageQuality: 5);
+    // final bytes = (await _image!.readAsBytes()).lengthInBytes;
+    final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery, imageQuality: 100);
 
-    final bytes = (await _image!.readAsBytes()).lengthInBytes;
-    final kb = bytes / 1024;
-    final mb = kb / 1024;
+    // final bytes = (await _image!.readAsBytes()).lengthInBytes;
+    // final kb = bytes / 1024;
+    // final mb = kb / 1024;
 
-    setState(
-      () {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-        }
-        print(_image);
-        print(kb);
-      },
-    );
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+      print(_image);
+      // print(bytes);
+    }
   }
 
   Future getImageFromCamera() async {
-    final pickedFile =
-        await picker.pickImage(source: ImageSource.camera, imageQuality: 5);
+    // final bytes = (await _image!.readAsBytes()).lengthInBytes;
+    final pickedFile = await picker.pickImage(
+        source: ImageSource.camera, imageQuality: 100);
 
-    final bytes = (await _image!.readAsBytes()).lengthInBytes;
-    final kb = bytes / 1024;
-    final mb = kb / 1024;
+    // final bytes = (await _image!.readAsBytes()).lengthInBytes;
+    // final kb = bytes / 1024;
+    // final mb = kb / 1024;
 
-    setState(
-      () {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-        }
-        print(_image);
-        print(kb);
-      },
-    );
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+      print(_image);
+      // print()
+      // print(bytes);
+    }
   }
 
   Future showOptions() async {
