@@ -1,9 +1,13 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 import 'package:take_picture_app/Colors.dart' as c;
+
+// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+// import 'package:path/path.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,6 +17,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+
   File? _image;
   final picker = ImagePicker();
   // int _imageQuality = 100;
@@ -20,43 +27,58 @@ class _HomeScreenState extends State<HomeScreen> {
   Future getImageFromGallery() async {
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
     final pickedFile =
-        await picker.pickImage(source: ImageSource.gallery, imageQuality: 5);
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 20);
 
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
     // final kb = bytes / 1024;
     // final mb = kb / 1024;
 
-    if (pickedFile != null) {
-      setState(() {
+    setState(() {
+      if (pickedFile != null) {
         _image = File(pickedFile.path);
-      });
-      print(_image);
-      // print(bytes);
-    }
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
   Future getImageFromCamera() async {
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
     final pickedFile =
-        await picker.pickImage(source: ImageSource.camera, imageQuality: 5);
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 20);
 
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
     // final kb = bytes / 1024;
     // final mb = kb / 1024;
 
-    if (pickedFile != null) {
-      setState(() {
+    setState(() {
+      if (pickedFile != null) {
         _image = File(pickedFile.path);
-      });
-      print(_image);
-      // print()
-      // print(bytes);
+        uploadFile();
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future uploadFile() async {
+    if (_image == null) return;
+    final fileName = basename(_image!.path);
+    final destination = 'files/$fileName';
+
+    try {
+      final ref =
+          firebase_storage.FirebaseStorage.instance.ref(destination).child('');
+      await ref.putFile(_image!);
+    } catch (e) {
+      print('error occured');
     }
   }
 
   Future showOptions() async {
     showCupertinoModalPopup(
-      context: context,
+      context: this.context,
       builder: (context) => CupertinoActionSheet(
         actions: [
           CupertinoActionSheetAction(
@@ -82,6 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text('Image Picker'),
       ),
       body: SingleChildScrollView(
@@ -94,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
               child: Text(
-                'Ukuran maximal file adalah 100kb',
+                'Ukuran maximal file adalah 200kb',
                 style: TextStyle(color: c.redColor),
               ),
             ),
