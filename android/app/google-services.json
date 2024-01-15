@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "404828075792",
+    "project_id": "image-picker-d8cc6",
+    "storage_bucket": "image-picker-d8cc6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:404828075792:android:e677be7a63409980ea9795",
+        "android_client_info": {
+          "package_name": "com.example.take_picture_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWCGGHkQ70qkZlYQDe9_KMWQiQfJJRMy0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
