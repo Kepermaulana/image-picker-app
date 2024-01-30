@@ -44,7 +44,7 @@ SnackBar WSnackBar_TextAlert(
   double mediaW = MediaQuery.of(context).size.width;
   double mediaH = MediaQuery.of(context).size.height;
   return SnackBar(
-    backgroundColor: (Colors.black12),
+    backgroundColor: (Colors.black87),
     content: Container(
       padding: const EdgeInsets.symmetric(
           horizontal: defaultPadding, vertical: defaultPadding),
@@ -58,7 +58,7 @@ SnackBar WSnackBar_TextAlert(
         ),
       ),
     ),
-    duration: const Duration(milliseconds: 1500),
+    duration: const Duration(milliseconds: 2000),
     padding: const EdgeInsets.symmetric(
       horizontal: 8.0, // Inner padding for SnackBar content.
     ),

@@ -51,6 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         );
 
+        ScaffoldMessenger.of(context).showSnackBar(
+            WSnackBar_TextAlert(context, 'File size is $bytes KB', ''));
+
         print("error File Size is: $bytes");
       } else {
         _image = File(pickedFile.path);
@@ -77,6 +80,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
     final pickedFile =
         await picker.pickImage(source: ImageSource.camera, imageQuality: 20);
+    // File file = new File("/data/user/0/com.example.take_picture_app/cache/");
+
+    // String fileName = file.path.split('/').last;
+
+    // print("FileName: $fileName");
 
     int sizeinkb = 200000;
     final bytes = (await pickedFile!.readAsBytes()).lengthInBytes;
