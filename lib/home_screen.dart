@@ -6,7 +6,6 @@ import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 import 'package:take_picture_app/Colors.dart' as c;
-
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:take_picture_app/widgets/WAlertDIalog.dart';
@@ -31,11 +30,18 @@ class _HomeScreenState extends State<HomeScreen> {
     //     1048576; // 5MB (You'll probably want this outside of this function so you can reuse the value elsewhere)
 
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
-    final pickedFile =
-        await picker.pickImage(source: ImageSource.gallery, imageQuality: 20);
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 40,
+      maxWidth: 960,
+      maxHeight: 720,
+    );
+
+    final decodedImage =
+        await decodeImageFromList(await pickedFile!.readAsBytes());
 
     int sizeinkb = 200000;
-    final bytes = (await pickedFile!.readAsBytes()).lengthInBytes;
+    final bytes = (await pickedFile.readAsBytes()).lengthInBytes;
     final kb = bytes / 1024;
     final mb = kb / 1024;
 
@@ -43,21 +49,22 @@ class _HomeScreenState extends State<HomeScreen> {
       if (pickedFile != null && bytes >= sizeinkb) {
         // _image = newImage;
 
-        showDialog(
-          barrierColor: Colors.black26,
-          context: context,
-          builder: (context) {
-            return WDialog_TextAlert(context, 'Upload Gambar Gagal', '');
-          },
-        );
+        // showDialog(
+        //   barrierColor: Colors.black26,
+        //   context: context,
+        //   builder: (context) {
+        //     return WDialog_TextAlert(context, 'Upload Gambar Gagal', '');
+        //   },
+        // );
 
         ScaffoldMessenger.of(context).showSnackBar(
             WSnackBar_TextAlert(context, 'File size is $bytes KB', ''));
 
         print("error File Size is: $bytes");
+        print('No image selected.');
       } else {
         _image = File(pickedFile.path);
-
+        GallerySaver.saveImage(pickedFile.path);
         showDialog(
           barrierColor: Colors.black26,
           context: context,
@@ -71,23 +78,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
         uploadFile();
         print("File Size is: $bytes KB");
-        print('No image selected.');
+        print(decodedImage.width);
+        print(decodedImage.height);
       }
     });
-  }
+  } 
 
   Future getImageFromCamera() async {
     // final bytes = (await _image!.readAsBytes()).lengthInBytes;
-    final pickedFile =
-        await picker.pickImage(source: ImageSource.camera, imageQuality: 20);
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 40,
+      maxWidth: 720,
+      maxHeight: 960,
+    );
     // File file = new File("/data/user/0/com.example.take_picture_app/cache/");
 
     // String fileName = file.path.split('/').last;
 
     // print("FileName: $fileName");
 
+    final decodedImage =
+        await decodeImageFromList(await pickedFile!.readAsBytes());
+
     int sizeinkb = 200000;
-    final bytes = (await pickedFile!.readAsBytes()).lengthInBytes;
+    final bytes = (await pickedFile.readAsBytes()).lengthInBytes;
     final kb = bytes / 1024;
     final mb = kb / 1024;
 
@@ -96,17 +111,21 @@ class _HomeScreenState extends State<HomeScreen> {
         // _image = File(pickedFile!.path);
         // GallerySaver.saveImage(pickedFile.path);
         // uploadFile();
-        showDialog(
-          barrierColor: Colors.black26,
-          context: context,
-          builder: (context) {
-            return WDialog_TextAlert(context, 'Upload Gambar Gagal', '');
-          },
-        );
+        // showDialog(
+        //   barrierColor: Colors.black26,
+        //   context: context,
+        //   builder: (context) {
+        //     return WDialog_TextAlert(context, 'Upload Gambar Gagal', '');
+        //   },
+        // );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+            WSnackBar_TextAlert(context, 'File size is $bytes KB', ''));
+
         print("error: File Size is: $bytes KB");
       } else {
-        _image = File(pickedFile!.path);
-        GallerySaver.saveImage(pickedFile!.path);
+        _image = File(pickedFile.path);
+        GallerySaver.saveImage(pickedFile.path);
         uploadFile();
         showDialog(
           barrierColor: Colors.black26,
@@ -120,37 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
             WSnackBar_TextAlert(context, 'File size is $bytes KB', ''));
         // print('No image selected.');
         print("File Size is: $bytes KB");
-      }
-    });
-  }
-
-  Future getImageFromCamera2() async {
-    // final bytes = (await _image!.readAsBytes()).lengthInBytes;
-    final pickedFile =
-        await picker.pickImage(source: ImageSource.camera, imageQuality: 5);
-
-    // int sizeinkb = 200000;
-    // final bytes = (await _image!.readAsBytes()).lengthInBytes;p
-    // final kb = bytes / 1024;
-    // final mb = kb / 1024;
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile!.path);
-        GallerySaver.saveImage(pickedFile.path);
-        uploadFile();
-        showDialog(
-          barrierColor: Colors.black26,
-          context: context,
-          builder: (context) {
-            return WDialog_TextAlert(context, 'Upload Gambar Berhasil',
-                'Silahkan Cek di Folder Penyimpanan anda');
-          },
-        );
-        // print("File Size is: $bytes");
-      } else {
-        print('No image selected.');
-        // print("File Size is: $bytes");
+        print(decodedImage.width);
+        print(decodedImage.height);
       }
     });
   }
@@ -208,6 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.of(context).pop();
               getImageFromGallery();
+              // getImageGalerry();
             },
           ),
           CupertinoActionSheetAction(
@@ -253,7 +244,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Image.file(
-                              File(_image!.path),
+                              File(
+                                _image!.path,
+                              ),
+                              
                             ),
                           ),
                         ),
