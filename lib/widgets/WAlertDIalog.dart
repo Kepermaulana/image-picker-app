@@ -6,7 +6,7 @@ import 'package:take_picture_app/widgets/style.dart';
 Dialog WDialog_TextAlert(
     BuildContext context, String title, String description) {
   double mediaW = MediaQuery.of(context).size.width;
-  double mediaH = MediaQuery.of(context).size.height;
+  // double mediaH = MediaQuery.of(context).size.height;
   return Dialog(
     elevation: 0,
     backgroundColor: c.whiteColor,
